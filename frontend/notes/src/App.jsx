@@ -1,11 +1,22 @@
 import { useState } from "react";
+import { auth, provider } from "./firebase";
+import { signInWithPopup, signOut } from "firebase/auth";
 
 export default function App() {
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const login = async () => {
+  const result = await signInWithPopup(auth, provider);
+  setUser(result.user);
+};
+const logout = () => {
+  signOut(auth);
+  setUser(null);
+};
   const addNote = () => {
   if (!title || !note) return;
 
@@ -30,9 +41,29 @@ export default function App() {
     {/* SIDEBAR */}
     <div className="w-60 bg-[#111] border-r border-white/10 p-4 flex flex-col">
   
-  <h2 className="text-lg font-medium mb-6 text-gray-200">
-    Second Brain
-  </h2>
+  <h2 className="text-lg font-medium mb-4 text-gray-200">
+  🧠 Second Brain
+</h2>
+
+{/* LOGIN SECTION */}
+{!user ? (
+  <button
+    onClick={login}
+    className="text-sm text-gray-300 mb-4 text-left hover:text-white transition"
+  >
+    Login with Google
+  </button>
+) : (
+  <div className="mb-4 text-sm">
+    <p className="text-gray-300">{user.displayName}</p>
+    <button
+      onClick={logout}
+      className="text-xs text-gray-500 hover:text-white"
+    >
+      Logout
+    </button>
+  </div>
+)}
 
   <button
   onClick={() => {
