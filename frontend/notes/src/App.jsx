@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { auth, provider } from "./firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
-
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "firebase/auth";
 export default function App() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
@@ -16,6 +24,35 @@ export default function App() {
 const logout = () => {
   signOut(auth);
   setUser(null);
+};
+const provider = new GoogleAuthProvider();
+
+const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log(result.user);
+    setShowAuthModal(false);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const handleEmailLogin = async () => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    setShowAuthModal(false);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const handleRegister = async () => {
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    setShowAuthModal(false);
+  } catch (err) {
+    console.log(err);
+  }
 };
   const addNote = () => {
   if (!title || !note) return;
@@ -39,65 +76,42 @@ const logout = () => {
   <div className="min-h-screen flex bg-black text-white">
 
     {/* SIDEBAR */}
-    <div className="w-60 bg-[#111] border-r border-white/10 p-4 flex flex-col">
-  
-  <h2 className="text-lg font-medium mb-4 text-gray-200">
-  🧠 Second Brain
-</h2>
+    <div className="w-60 bg-[#111] border-r border-white/10 p-4 flex flex-col justify-between">
 
-{/* LOGIN SECTION */}
-{!user ? (
-  <button
-    onClick={login}
-    className="text-sm text-gray-300 mb-4 text-left hover:text-white transition"
-  >
-    Login with Google
-  </button>
-) : (
-  <div className="mb-4 text-sm">
-    <p className="text-gray-300">{user.displayName}</p>
+  {/* TOP */}
+  <div>
+    <h2 className="text-lg font-medium mb-6 text-gray-200">
+      🧠 Second Brain
+    </h2>
+
     <button
-      onClick={logout}
-      className="text-xs text-gray-500 hover:text-white"
+      onClick={() => setShowModal(true)}
+      className="text-left px-3 py-2 rounded-md hover:bg-white/10 text-sm text-gray-300 transition"
     >
-      Logout
+      + New Note
     </button>
-  </div>
-)}
 
+    {/* Notes list */}
+    <div className="mt-4 space-y-1">
+      {notes.map((n, i) => (
+        <div
+          key={i}
+          className="px-3 py-2 rounded-md text-sm text-gray-400 hover:bg-white/5 cursor-pointer"
+        >
+          {n.title || "Untitled"}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* 🔥 BOTTOM LOGIN BUTTON */}
   <button
-  onClick={() => {
-    console.log("clicked"); // debug
-    setShowModal(true);
-    setTitle("");
-    setNote("");
-    setSelectedIndex(null);
-  }}
-  className="text-left px-3 py-2 rounded-md hover:bg-white/10 text-sm text-gray-300 transition"
->
-  + New Note
-</button>
+    onClick={() => setShowAuthModal(true)}
+    className="w-full py-2 rounded-md bg-white/10 hover:bg-white/20 text-sm text-white transition"
+  >
+    Login / Signup
+  </button>
 
-  <div className="mt-4 space-y-1">
-    {notes.map((n, i) => (
-      <div
-        key={i}
-        onClick={() => {
-          setTitle(n.title);
-          setNote(n.note);
-          setSelectedIndex(i);
-          setShowModal(true);
-        }}
-        className={`px-3 py-2 rounded-md text-sm cursor-pointer transition ${
-          selectedIndex === i
-            ? "bg-white/10 text-white"
-            : "text-gray-400 hover:bg-white/5"
-        }`}
-      >
-        {n.title || "Untitled"}
-      </div>
-    ))}
-  </div>
 </div>
 
     {/* MAIN CONTENT */}
@@ -186,6 +200,71 @@ const logout = () => {
           Save
         </button>
       </div>
+
+    </div>
+  </div>
+)}
+{showAuthModal && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+    <div className="bg-[#1a1a1a] w-full max-w-sm rounded-xl p-6 shadow-xl">
+
+      <h2 className="text-lg font-semibold mb-4 text-white">
+        Welcome
+      </h2>
+
+      {/* GOOGLE LOGIN */}
+      <button
+        onClick={handleGoogleLogin}
+        className="w-full mb-3 py-2 rounded-md bg-white text-black font-medium hover:opacity-90 transition"
+      >
+        Continue with Google
+      </button>
+
+      {/* DIVIDER */}
+      <div className="text-center text-gray-400 text-sm my-3">or</div>
+
+      {/* EMAIL */}
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full mb-2 px-3 py-2 rounded-md bg-black/40 border border-white/10 text-white"
+      />
+
+      {/* PASSWORD */}
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full mb-3 px-3 py-2 rounded-md bg-black/40 border border-white/10 text-white"
+      />
+
+      {/* LOGIN BUTTON */}
+      <button
+        onClick={handleEmailLogin}
+        className="w-full py-2 rounded-md bg-purple-600 hover:bg-purple-700 transition"
+      >
+        Login
+      </button>
+
+      {/* REGISTER */}
+      <button
+        onClick={handleRegister}
+        className="w-full mt-2 py-2 rounded-md border border-white/20 hover:bg-white/10 transition"
+      >
+        Register
+      </button>
+
+      {/* CLOSE */}
+      <button
+        onClick={() => setShowAuthModal(false)}
+        className="mt-4 text-sm text-gray-400 hover:text-white"
+      >
+        Cancel
+      </button>
 
     </div>
   </div>
