@@ -1,11 +1,36 @@
 import { useState } from "react";
 import { auth, provider } from "./firebase";
 import {
-  signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from "firebase/auth";
+import { getRedirectResult } from "firebase/auth";
+const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+if (isPWA) {
+  signInWithRedirect(auth, provider);
+} else {
+  signInWithPopup(auth, provider);
+}
+useEffect(() => {
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result?.user) {
+        console.log("User:", result.user);
+      }
+    })
+    .catch((error) => console.log(error));
+}, []);
+import { signInWithRedirect } from "firebase/auth";
+
+const handleGoogleLogin = async () => {
+  try {
+    await signInWithRedirect(auth, provider);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
