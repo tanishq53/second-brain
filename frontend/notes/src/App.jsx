@@ -9,6 +9,7 @@ import {
   createUserWithEmailAndPassword,
   signOut
 } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -20,16 +21,16 @@ export default function App() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
- 
+
 useEffect(() => {
-  getRedirectResult(auth)
-    .then((result) => {
-      if (result?.user) {
-        setUser(result.user);
-        setShowAuthModal(false);
-      }
-    })
-    .catch((error) => console.log(error));
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      setUser(currentUser);
+      setShowAuthModal(false);
+    }
+  });
+
+  return () => unsubscribe();
 }, []);
 const logout = () => {
   signOut(auth);
