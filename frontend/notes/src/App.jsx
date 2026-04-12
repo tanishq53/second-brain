@@ -104,7 +104,7 @@ const handleRegister = async () => {
   {/* TOP */}
   <div>
     <h2 className="text-lg font-medium mb-6 text-gray-200">
-      🧠 Second Brain
+       Second Brain
     </h2>
 
     <button
@@ -128,13 +128,26 @@ const handleRegister = async () => {
   </div>
 
   {/* 🔥 BOTTOM LOGIN BUTTON */}
+  {!user ? (
   <button
     onClick={() => setShowAuthModal(true)}
-    className="w-full py-2 rounded-md bg-white/10 hover:bg-white/20 text-sm text-white transition"
+    className="mt-auto bg-white/10 hover:bg-white/20 py-2 rounded-lg"
   >
     Login / Signup
   </button>
-
+) : (
+  <div className="mt-auto text-sm text-gray-300">
+    👤 {user.displayName}
+  </div>
+)}
+{user && (
+  <button
+    onClick={logout}
+    className="mt-2 text-xs text-red-400 hover:text-red-300"
+  >
+    Logout
+  </button>
+)}
 </div>
 
     {/* MAIN CONTENT */}
@@ -145,21 +158,21 @@ const handleRegister = async () => {
   <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-500 blur-3xl opacity-20"></div>
 
   <div className="relative z-10 max-w-5xl mx-auto">
-{!user ? (
-  <button onClick={() => setShowAuthModal(true)}>
-    Login
-  </button>
-) : (
-  <div>Welcome {user.displayName}</div>
-)}
 {user ? (
-  <div>
-    {/* YOUR APP UI */}
-    <h1>Welcome {user.displayName}</h1>
+  <div className="text-center">
+    <h1 className="text-4xl font-semibold text-gray-100 mb-2">
+      Welcome {user.displayName}
+    </h1>
+
+    <p className="text-gray-400 text-sm">
+      Select a note or create a new one
+    </p>
   </div>
 ) : (
   <div className="text-center">
-    <h1>Please login to continue</h1>
+    <h1 className="text-3xl text-gray-300">
+      Please login to continue
+    </h1>
   </div>
 )}
     {/* SHOW WELCOME ONLY IF NO NOTES */}
