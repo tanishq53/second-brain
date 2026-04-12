@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth, provider } from "./firebase";
 import {
   signInWithPopup,
@@ -36,7 +36,6 @@ const logout = () => {
   signOut(auth);
   setUser(null);
 };
-const provider = new GoogleAuthProvider();
 const handleGoogleLogin = async () => {
   try {
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
