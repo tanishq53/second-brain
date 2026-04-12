@@ -24,23 +24,8 @@ export default function App() {
 
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    console.log("User:", currentUser);
-
-    if (currentUser) {
-      setUser(currentUser);
-      setShowAuthModal(false);
-    }
-  });
-
-  return () => unsubscribe();
-}, []);useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    console.log("User:", currentUser);
-
-    if (currentUser) {
-      setUser(currentUser);
-      setShowAuthModal(false);
-    }
+    console.log("User logged in:", currentUser);
+    setUser(currentUser);
   });
 
   return () => unsubscribe();
@@ -160,7 +145,23 @@ const handleRegister = async () => {
   <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-500 blur-3xl opacity-20"></div>
 
   <div className="relative z-10 max-w-5xl mx-auto">
-
+{!user ? (
+  <button onClick={() => setShowAuthModal(true)}>
+    Login
+  </button>
+) : (
+  <div>Welcome {user.displayName}</div>
+)}
+{user ? (
+  <div>
+    {/* YOUR APP UI */}
+    <h1>Welcome {user.displayName}</h1>
+  </div>
+) : (
+  <div className="text-center">
+    <h1>Please login to continue</h1>
+  </div>
+)}
     {/* SHOW WELCOME ONLY IF NO NOTES */}
     {notes.length === 0 && (
       <div className="flex flex-col items-center justify-center h-[70vh] text-center">
