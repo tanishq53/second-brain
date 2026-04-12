@@ -22,9 +22,11 @@ export default function App() {
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
+
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
     if (currentUser) {
+      console.log("User logged in:", currentUser);
       setUser(currentUser);
       setShowAuthModal(false);
     }
