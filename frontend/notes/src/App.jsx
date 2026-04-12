@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, provider } from "./firebase";
 import {
-  signInWithPopup,
+  
   signInWithRedirect,
   getRedirectResult,
   GoogleAuthProvider,
@@ -22,7 +22,29 @@ export default function App() {
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    console.log("User:", currentUser);
 
+    if (currentUser) {
+      setUser(currentUser);
+      setShowAuthModal(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    console.log("User:", currentUser);
+
+    if (currentUser) {
+      setUser(currentUser);
+      setShowAuthModal(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 useEffect(() => {
   // Handle redirect result (for PWA)
   getRedirectResult(auth).then((result) => {
@@ -47,14 +69,7 @@ const logout = () => {
 };
 const handleGoogleLogin = async () => {
   try {
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-
-    if (isPWA) {
-      await signInWithRedirect(auth, provider);
-    } else {
-      const result = await signInWithPopup(auth, provider);
-    
-    }
+    await signInWithRedirect(auth, provider);
   } catch (error) {
     console.log(error);
   }
