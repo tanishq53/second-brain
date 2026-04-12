@@ -9,23 +9,6 @@ import {
   createUserWithEmailAndPassword,
   signOut
 } from "firebase/auth";
-const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-
-if (isPWA) {
-  signInWithRedirect(auth, provider);
-} else {
-  signInWithPopup(auth, provider);
-}
-useEffect(() => {
-  getRedirectResult(auth)
-    .then((result) => {
-      if (result?.user) {
-        setUser(result.user);
-        setShowAuthModal(false);
-      }
-    })
-    .catch((error) => console.log(error));
-}, []);
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -37,10 +20,17 @@ export default function App() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const login = async () => {
-  const result = await signInWithPopup(auth, provider);
-  setUser(result.user);
-};
+ 
+useEffect(() => {
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result?.user) {
+        setUser(result.user);
+        setShowAuthModal(false);
+      }
+    })
+    .catch((error) => console.log(error));
+}, []);
 const logout = () => {
   signOut(auth);
   setUser(null);
