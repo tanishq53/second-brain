@@ -24,6 +24,13 @@ export default function App() {
 
 
 useEffect(() => {
+  // Handle redirect result (for PWA)
+  getRedirectResult(auth).then((result) => {
+    if (result?.user) {
+      setUser(result.user);
+      setShowAuthModal(false);
+    }
+  });
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
     if (currentUser) {
       console.log("User logged in:", currentUser);
@@ -46,8 +53,7 @@ const handleGoogleLogin = async () => {
       await signInWithRedirect(auth, provider);
     } else {
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
-      setShowAuthModal(false);
+    
     }
   } catch (error) {
     console.log(error);
