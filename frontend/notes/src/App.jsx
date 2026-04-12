@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { auth, provider } from "./firebase";
 import {
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
-import { getRedirectResult } from "firebase/auth";
 const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
 if (isPWA) {
@@ -17,20 +20,13 @@ useEffect(() => {
   getRedirectResult(auth)
     .then((result) => {
       if (result?.user) {
-        console.log("User:", result.user);
+        setUser(result.user);
+        setShowAuthModal(false);
       }
     })
     .catch((error) => console.log(error));
 }, []);
-import { signInWithRedirect } from "firebase/auth";
 
-const handleGoogleLogin = async () => {
-  try {
-    await signInWithRedirect(auth, provider);
-  } catch (error) {
-    console.log(error);
-  }
-};
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,14 +46,19 @@ const logout = () => {
   setUser(null);
 };
 const provider = new GoogleAuthProvider();
-
 const handleGoogleLogin = async () => {
   try {
-    const result = await signInWithPopup(auth, provider);
-    console.log(result.user);
-    setShowAuthModal(false);
-  } catch (err) {
-    console.log(err);
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isPWA) {
+      await signInWithRedirect(auth, provider);
+    } else {
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user);
+      setShowAuthModal(false);
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
