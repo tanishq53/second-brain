@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { auth, provider } from "./firebase";
+import { db } from "./firebase";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import {
   
   signInWithPopup,
@@ -18,6 +27,30 @@ export default function App() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  useEffect(() => {
+  if (!user) {
+    setNotes([]);
+    return;
+  }
+
+  const loadNotes = async () => {
+    const q = query(
+      collection(db, "notes"),
+      where("uid", "==", user.uid)
+    );
+
+    const snapshot = await getDocs(q);
+
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setNotes(data);
+  };
+
+  loadNotes();
+}, [user]);
 useEffect(() => {
   const checkRedirect = async () => {
     try {
@@ -81,22 +114,22 @@ const handleRegister = async () => {
     console.log(err);
   }
 };
-  const addNote = () => {
-  if (!title || !note) return;
+  const addNote = async () => {
+  if (!title || !note || !user) return;
 
-  if (selectedIndex !== null) {
-    // UPDATE existing note
-    const updatedNotes = [...notes];
-    updatedNotes[selectedIndex] = { title, note };
-    setNotes(updatedNotes);
-    setSelectedIndex(null);
-  } else {
-    // CREATE new note
-    setNotes([...notes, { title, note }]);
+  try {
+    await addDoc(collection(db, "notes"), {
+      uid: user.uid,
+      title,
+      note,
+      createdAt: serverTimestamp(),
+    });
+
+    setTitle("");
+    setNote("");
+  } catch (err) {
+    console.log(err);
   }
-
-  setTitle("");
-  setNote("");
 };
 
   return (
