@@ -22,12 +22,30 @@ export default function App() {
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
 useEffect(() => {
- 
+  const checkRedirect = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+
+      if (result?.user) {
+        console.log("Redirect Login:", result.user);
+        setUser(result.user);
+        setShowAuthModal(false);
+      }
+    } catch (error) {
+      console.error("Redirect Error:", error);
+    }
+  };
+
+  checkRedirect();
+
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    console.log("Auth State:", currentUser);
+
     if (currentUser) {
-      console.log("User logged in:", currentUser);
       setUser(currentUser);
       setShowAuthModal(false);
+    } else {
+      setUser(null);
     }
   });
 
