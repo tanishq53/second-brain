@@ -31,19 +31,11 @@ export default function NoteModal({
 
         <div className="flex justify-end gap-3 mt-4">
           <button
-  onClick={() => {
-    if (selectedNote) {
-      updateNote();
-    } else {
-      addNote();
-    }
-
-    setShowModal(false);
-  }}
-  className="bg-white text-black px-4 py-1 rounded"
->
-  {selectedNote ? "Update" : "Save"}
-</button>
+            onClick={() => setShowModal(false)}
+            className="text-gray-400 hover:text-white"
+          >
+            Cancel
+          </button>
 
           <button
   onClick={() => {
