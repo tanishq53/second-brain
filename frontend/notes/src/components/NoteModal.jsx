@@ -6,6 +6,8 @@ export default function NoteModal({
   note,
   setNote,
   addNote,
+  updateNote,
+  selectedNote,
 }) {
   if (!showModal) return null;
 
@@ -29,21 +31,34 @@ export default function NoteModal({
 
         <div className="flex justify-end gap-3 mt-4">
           <button
-            onClick={() => setShowModal(false)}
-            className="text-gray-400 hover:text-white"
-          >
-            Cancel
-          </button>
+  onClick={() => {
+    if (selectedNote) {
+      updateNote();
+    } else {
+      addNote();
+    }
+
+    setShowModal(false);
+  }}
+  className="bg-white text-black px-4 py-1 rounded"
+>
+  {selectedNote ? "Update" : "Save"}
+</button>
 
           <button
-            onClick={() => {
-              addNote();
-              setShowModal(false);
-            }}
-            className="bg-white text-black px-4 py-1 rounded"
-          >
-            Save
-          </button>
+  onClick={() => {
+    if (selectedNote) {
+      updateNote();
+    } else {
+      addNote();
+    }
+
+    setShowModal(false);
+  }}
+  className="bg-white text-black px-4 py-1 rounded"
+>
+  {selectedNote ? "Update" : "Save"}
+</button>
         </div>
 
       </div>

@@ -4,6 +4,7 @@ import { db } from "./firebase";
 import AuthModal from "./components/AuthModal";
 import NoteModal from "./components/NoteModal";
 import NotesGrid from "./components/NotesGrid";
+import useNotes from "./hooks/useNotes";
 import {
   collection,
   addDoc,
@@ -29,32 +30,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
-  const [notes, setNotes] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(null);
- useEffect(() => {
-  if (!user) {
-    setNotes([]);
-    return;
-  }
-
-  const q = query(
-    collection(db, "notes"),
-    where("uid", "==", user.uid)
-  );
-
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const loadedNotes = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    console.log("Loaded Notes:", loadedNotes);
-
-    setNotes(loadedNotes);
-  });
-
-  return () => unsubscribe();
-}, [user]);
+  const [selectedNote, setSelectedNote] = useState(null);
+ 
 useEffect(() => {
   
 
@@ -104,23 +81,11 @@ const handleRegister = async () => {
     console.log(err);
   }
 };
-  const addNote = async () => {
-  if (!title || !note || !user) return;
-
-  try {
-    await addDoc(collection(db, "notes"), {
-      uid: user.uid,
-      title,
-      note,
-      createdAt: serverTimestamp(),
-    });
-
-    setTitle("");
-    setNote("");
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const {
+  notes,
+  addNote: saveNote,
+  updateNote: saveUpdatedNote,
+} = useNotes(user);
 
   return (
   <div className="min-h-screen flex bg-black text-white">
@@ -164,11 +129,13 @@ const handleRegister = async () => {
           </p>
         </div>
       ) : (
-        <NotesGrid
+  
+  
+  <NotesGrid
   notes={notes}
   setTitle={setTitle}
   setNote={setNote}
-  setSelectedIndex={setSelectedIndex}
+  setSelectedNote={setSelectedNote}
   setShowModal={setShowModal}
 />
       )}
@@ -189,8 +156,20 @@ const handleRegister = async () => {
   setTitle={setTitle}
   note={note}
   setNote={setNote}
-  addNote={addNote}
-/>    
+  selectedNote={selectedNote}
+  addNote={() => {
+    saveNote(title, note);
+    setTitle("");
+    setNote("");
+    setSelectedNote(null);
+  }}
+  updateNote={() => {
+    saveUpdatedNote(selectedNote, title, note);
+    setTitle("");
+    setNote("");
+    setSelectedNote(null);
+  }}
+/>
 <AuthModal
   showAuthModal={showAuthModal}
   setShowAuthModal={setShowAuthModal}

@@ -4,7 +4,7 @@ export default function NotesGrid({
   notes,
   setTitle,
   setNote,
-  setSelectedIndex,
+  setSelectedNote,
   setShowModal,
 }) {
   return (
@@ -14,11 +14,11 @@ export default function NotesGrid({
           key={n.id}
           note={n}
           onClick={() => {
-            setTitle(n.title);
-            setNote(n.note);
-            setSelectedIndex(n.id);
-            setShowModal(true);
-          }}
+  setTitle(n.title);
+  setNote(n.note);
+  setSelectedNote(n.id);
+  setShowModal(true);
+}}
         />
       ))}
     </div>
