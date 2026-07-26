@@ -9,6 +9,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
+import Sidebar from "./components/Sidebar";
 import {
   
   signInWithPopup,
@@ -120,58 +121,13 @@ const handleRegister = async () => {
 
   return (
   <div className="min-h-screen flex bg-black text-white">
-
-    {/* SIDEBAR */}
-    <div className="w-60 bg-[#111] border-r border-white/10 p-4 flex flex-col justify-between">
-
-  {/* TOP */}
-  <div>
-    <h2 className="text-lg font-medium mb-6 text-gray-200">
-       Second Brain
-    </h2>
-
-    <button
-      onClick={() => setShowModal(true)}
-      className="text-left px-3 py-2 rounded-md hover:bg-white/10 text-sm text-gray-300 transition"
-    >
-      + New Note
-    </button>
-
-    {/* Notes list */}
-    <div className="mt-4 space-y-1">
-      {notes.map((n, i) => (
-        <div
-          key={i}
-          className="px-3 py-2 rounded-md text-sm text-gray-400 hover:bg-white/5 cursor-pointer"
-        >
-          {n.title || "Untitled"}
-        </div>
-      ))}
-    </div>
-  </div>
-
-  {/* 🔥 BOTTOM LOGIN BUTTON */}
-  {!user ? (
-  <button
-    onClick={() => setShowAuthModal(true)}
-    className="mt-auto bg-white/10 hover:bg-white/20 py-2 rounded-lg"
-  >
-    Login / Signup
-  </button>
-) : (
-  <div className="mt-auto text-sm text-gray-300">
-    👤 {user.displayName}
-  </div>
-)}
-{user && (
-  <button
-    onClick={logout}
-    className="mt-2 text-xs text-red-400 hover:text-red-300"
-  >
-    Logout
-  </button>
-)}
-</div>
+    <Sidebar
+  user={user}
+  notes={notes}
+  logout={logout}
+  setShowModal={setShowModal}
+  setShowAuthModal={setShowAuthModal}
+/>
 
     {/* MAIN CONTENT */}
     <div className="flex-1 relative p-10">
@@ -181,62 +137,62 @@ const handleRegister = async () => {
   <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-500 blur-3xl opacity-20"></div>
 
   <div className="relative z-10 max-w-5xl mx-auto">
-{user ? (
-  <div className="text-center">
-    <h1 className="text-4xl font-semibold text-gray-100 mb-2">
-      Welcome {user.displayName}
-    </h1>
 
-    <p className="text-gray-400 text-sm">
-      Select a note or create a new one
-    </p>
-  </div>
-) : (
-  <div className="text-center">
-    <h1 className="text-3xl text-gray-300">
-      Please login to continue
-    </h1>
-  </div>
-)}
-    {/* SHOW WELCOME ONLY IF NO NOTES */}
-    {notes.length === 0 && (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+  {user ? (
+    <>
+      <div className="text-center mb-8">
         <h1 className="text-4xl font-semibold text-gray-100 mb-2">
-          Welcome
+          Welcome {user.displayName}
         </h1>
 
         <p className="text-gray-400 text-sm">
           Select a note or create a new one
         </p>
       </div>
-    )}
 
-    {/* NOTES GRID */}
-    {notes.length > 0 && (
-      <div className="grid md:grid-cols-3 gap-6">
-        {notes.map((n, i) => (
-          <div
-            key={i}
-            onClick={() => {
-              setTitle(n.title);
-              setNote(n.note);
-              setSelectedIndex(i);
-              setShowModal(true);
-            }}
-            className="cursor-pointer bg-[#1f1f1f] p-5 rounded-xl border border-white/10 hover:border-purple-500 transition"
-          >
-            <h2 className="text-lg font-semibold text-white mb-1">
-              {n.title}
-            </h2>
-            <p className="text-gray-400 text-sm line-clamp-3">
-              {n.note}
-            </p>
-          </div>
-        ))}
-      </div>
-    )}
+      {notes.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+          <h2 className="text-3xl text-gray-300">
+            No Notes Yet
+          </h2>
 
-  </div>
+          <p className="text-gray-500 mt-2">
+            Click <b>+ New Note</b> to create your first note.
+          </p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-3 gap-6">
+          {notes.map((n) => (
+            <div
+              key={n.id}
+              onClick={() => {
+                setTitle(n.title);
+                setNote(n.note);
+                setSelectedIndex(n.id);
+                setShowModal(true);
+              }}
+              className="cursor-pointer bg-[#1f1f1f] p-5 rounded-xl border border-white/10 hover:border-purple-500 transition"
+            >
+              <h2 className="text-lg font-semibold text-white mb-2">
+                {n.title || "Untitled"}
+              </h2>
+
+              <p className="text-gray-400">
+                {n.note}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  ) : (
+    <div className="flex items-center justify-center h-[70vh]">
+      <h1 className="text-3xl text-gray-300">
+        Please login to continue
+      </h1>
+    </div>
+  )}
+</div>
 </div>
     {showModal && (
   <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
