@@ -1,20 +1,21 @@
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCs3qu8-5pVUY3qQkPBbnsXB-85E2Rgav0",
-  authDomain: "second-brain53.firebaseapp.com",
-  projectId: "second-brain53",
-  storageBucket: "second-brain53.firebasestorage.app",
-  messagingSenderId: "719833919936",
-  appId: "1:719833919936:web:2527374e2914ee0f5c1825",
-  measurementId: "G-CE95V2RSVC"
+  apiKey: "AIzaSyDBm2WU5SSr3kn5mey1qoN9tiq8RkejDo0",
+  authDomain: "second-brain-edc31.firebaseapp.com",
+  projectId: "second-brain-edc31",
+  storageBucket: "second-brain-edc31.firebasestorage.app",
+  messagingSenderId: "109051647806",
+  appId: "1:109051647806:web:438722624c331b6f2b3e6f",
+  measurementId: "G-WKHZ6GGNQW"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider();
-
-
-
+const analytics = getAnalytics(app);

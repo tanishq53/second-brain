@@ -21,23 +21,8 @@ export default function App() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
-
 useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    console.log("User logged in:", currentUser);
-    setUser(currentUser);
-  });
-
-  return () => unsubscribe();
-}, []);
-useEffect(() => {
-  // Handle redirect result (for PWA)
-  getRedirectResult(auth).then((result) => {
-    if (result?.user) {
-      setUser(result.user);
-      setShowAuthModal(false);
-    }
-  });
+ 
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
     if (currentUser) {
       console.log("User logged in:", currentUser);
