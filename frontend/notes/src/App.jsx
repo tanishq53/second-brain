@@ -86,7 +86,7 @@ const handleRegister = async () => {
   addNote: saveNote,
   updateNote: saveUpdatedNote,
 } = useNotes(user);
-
+console.log("selectedNote:", selectedNote);
   return (
   <div className="min-h-screen flex bg-black text-white">
     <Sidebar

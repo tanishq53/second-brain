@@ -14,6 +14,8 @@ export default function NotesGrid({
           key={n.id}
           note={n}
           onClick={() => {
+  console.log("Clicked ID:", n.id);
+
   setTitle(n.title);
   setNote(n.note);
   setSelectedNote(n.id);
