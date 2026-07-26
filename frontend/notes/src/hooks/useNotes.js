@@ -22,19 +22,6 @@ export default function useNotes(user) {
       where("uid", "==", user.uid)
     );
 
-
-    return () => unsubscribe();
-  }, [user]);
-const addNote = async (title, note) => {
-  if (!title || !note || !user) return;
-
-  await createNote(user, title, note);
-};
-const updateNote = async (id, title, note) => {
-  if (!id) return;
-
-  await editNote(id, title, note);
-};
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const loadedNotes = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -43,7 +30,21 @@ const updateNote = async (id, title, note) => {
 
       setNotes(loadedNotes);
     });
-  
+
+    return () => unsubscribe();
+  }, [user]);
+
+  const addNote = async (title, note) => {
+    if (!title || !note || !user) return;
+
+    await createNote(user, title, note);
+  };
+
+  const updateNote = async (id, title, note) => {
+    if (!id) return;
+
+    await editNote(id, title, note);
+  };
 
   return {
     notes,
