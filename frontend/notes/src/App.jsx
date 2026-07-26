@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { auth, provider } from "./firebase";
 import {
   
-  signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -57,9 +57,12 @@ const logout = () => {
 };
 const handleGoogleLogin = async () => {
   try {
-    await signInWithRedirect(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    console.log("Google User:", result.user);
+    setUser(result.user);
+    setShowAuthModal(false);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

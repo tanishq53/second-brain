@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-// Optional: only keep Analytics if you really want it
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBm2WU5SSr3kn5mey1qoN9tiq8RkejDo0",
@@ -15,10 +14,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Optional
-const analytics = getAnalytics(app);
+// Analytics (optional)
+isSupported().then((supported) => {
+  if (supported) {
+    getAnalytics(app);
+  }
+});
 
-// ⭐ These are what your App.jsx needs
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
