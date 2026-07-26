@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { createNote } from "../services/noteService";
 import { createNote, editNote } from "../services/noteService";
 import {
   collection,
-  addDoc,
   query,
   where,
   onSnapshot,
-  serverTimestamp,
 } from "firebase/firestore";
 
 export default function useNotes(user) {
@@ -24,6 +21,10 @@ export default function useNotes(user) {
       collection(db, "notes"),
       where("uid", "==", user.uid)
     );
+
+
+    return () => unsubscribe();
+  }, [user]);
 const addNote = async (title, note) => {
   if (!title || !note || !user) return;
 
@@ -42,15 +43,7 @@ const updateNote = async (id, title, note) => {
 
       setNotes(loadedNotes);
     });
-
-    return () => unsubscribe();
-  }, [user]);
-
-  const addNote = async (title, note) => {
-    if (!title || !note || !user) return;
-
-    
-  };
+  
 
   return {
     notes,
