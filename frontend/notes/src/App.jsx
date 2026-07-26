@@ -10,7 +10,7 @@ import {
   signOut
 } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-
+import { signInWithPopup } from "firebase/auth";
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
