@@ -1,0 +1,26 @@
+import NoteCard from "./NoteCard";
+
+export default function NotesGrid({
+  notes,
+  setTitle,
+  setNote,
+  setSelectedIndex,
+  setShowModal,
+}) {
+  return (
+    <div className="grid md:grid-cols-3 gap-6">
+      {notes.map((n) => (
+        <NoteCard
+          key={n.id}
+          note={n}
+          onClick={() => {
+            setTitle(n.title);
+            setNote(n.note);
+            setSelectedIndex(n.id);
+            setShowModal(true);
+          }}
+        />
+      ))}
+    </div>
+  );
+}

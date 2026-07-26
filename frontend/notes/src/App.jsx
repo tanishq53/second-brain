@@ -3,6 +3,7 @@ import { auth, provider } from "./firebase";
 import { db } from "./firebase";
 import AuthModal from "./components/AuthModal";
 import NoteModal from "./components/NoteModal";
+import NotesGrid from "./components/NotesGrid";
 import {
   collection,
   addDoc,
@@ -163,28 +164,13 @@ const handleRegister = async () => {
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
-          {notes.map((n) => (
-            <div
-              key={n.id}
-              onClick={() => {
-                setTitle(n.title);
-                setNote(n.note);
-                setSelectedIndex(n.id);
-                setShowModal(true);
-              }}
-              className="cursor-pointer bg-[#1f1f1f] p-5 rounded-xl border border-white/10 hover:border-purple-500 transition"
-            >
-              <h2 className="text-lg font-semibold text-white mb-2">
-                {n.title || "Untitled"}
-              </h2>
-
-              <p className="text-gray-400">
-                {n.note}
-              </p>
-            </div>
-          ))}
-        </div>
+        <NotesGrid
+  notes={notes}
+  setTitle={setTitle}
+  setNote={setNote}
+  setSelectedIndex={setSelectedIndex}
+  setShowModal={setShowModal}
+/>
       )}
     </>
   ) : (
