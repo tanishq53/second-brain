@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { auth, provider } from "./firebase";
 import { db } from "./firebase";
+import AuthModal from "./components/AuthModal";
+import NoteModal from "./components/NoteModal";
 import {
   collection,
   addDoc,
@@ -194,112 +196,26 @@ const handleRegister = async () => {
   )}
 </div>
 </div>
-    {showModal && (
-  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
-    
-    <div className="bg-[#1f1f1f] w-full max-w-xl rounded-xl p-6 shadow-2xl">
-
-      <input
-        className="w-full text-xl font-semibold bg-transparent outline-none text-white mb-4"
-        placeholder="Untitled"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-
-      <textarea
-        className="w-full bg-transparent outline-none text-gray-300 min-h-[120px]"
-        placeholder="Start writing..."
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-
-      <div className="flex justify-end gap-3 mt-4">
-        <button
-          onClick={() => setShowModal(false)}
-          className="text-gray-400 hover:text-white"
-        >
-          Cancel
-        </button>
-
-        <button
-          onClick={() => {
-            addNote();
-            setShowModal(false);
-          }}
-          className="bg-white text-black px-4 py-1 rounded"
-        >
-          Save
-        </button>
-      </div>
-
-    </div>
-  </div>
-)}
-{showAuthModal && (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-
-    <div className="bg-[#1a1a1a] w-full max-w-sm rounded-xl p-6 shadow-xl">
-
-      <h2 className="text-lg font-semibold mb-4 text-white">
-        Welcome
-      </h2>
-
-      {/* GOOGLE LOGIN */}
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full mb-3 py-2 rounded-md bg-white text-black font-medium hover:opacity-90 transition"
-      >
-        Continue with Google
-      </button>
-
-      {/* DIVIDER */}
-      <div className="text-center text-gray-400 text-sm my-3">or</div>
-
-      {/* EMAIL */}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full mb-2 px-3 py-2 rounded-md bg-black/40 border border-white/10 text-white"
-      />
-
-      {/* PASSWORD */}
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-3 px-3 py-2 rounded-md bg-black/40 border border-white/10 text-white"
-      />
-
-      {/* LOGIN BUTTON */}
-      <button
-        onClick={handleEmailLogin}
-        className="w-full py-2 rounded-md bg-purple-600 hover:bg-purple-700 transition"
-      >
-        Login
-      </button>
-
-      {/* REGISTER */}
-      <button
-        onClick={handleRegister}
-        className="w-full mt-2 py-2 rounded-md border border-white/20 hover:bg-white/10 transition"
-      >
-        Register
-      </button>
-
-      {/* CLOSE */}
-      <button
-        onClick={() => setShowAuthModal(false)}
-        className="mt-4 text-sm text-gray-400 hover:text-white"
-      >
-        Cancel
-      </button>
-
-    </div>
-  </div>
-)}
+<NoteModal
+  showModal={showModal}
+  setShowModal={setShowModal}
+  title={title}
+  setTitle={setTitle}
+  note={note}
+  setNote={setNote}
+  addNote={addNote}
+/>    
+<AuthModal
+  showAuthModal={showAuthModal}
+  setShowAuthModal={setShowAuthModal}
+  email={email}
+  setEmail={setEmail}
+  password={password}
+  setPassword={setPassword}
+  handleGoogleLogin={handleGoogleLogin}
+  handleEmailLogin={handleEmailLogin}
+  handleRegister={handleRegister}
+/>
   </div>
 );
 }
