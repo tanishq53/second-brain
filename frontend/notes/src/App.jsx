@@ -52,21 +52,7 @@ export default function App() {
   loadNotes();
 }, [user]);
 useEffect(() => {
-  const checkRedirect = async () => {
-    try {
-      const result = await getRedirectResult(auth);
-
-      if (result?.user) {
-        console.log("Redirect Login:", result.user);
-        setUser(result.user);
-        setShowAuthModal(false);
-      }
-    } catch (error) {
-      console.error("Redirect Error:", error);
-    }
-  };
-
-  checkRedirect();
+  
 
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
     console.log("Auth State:", currentUser);
