@@ -6,7 +6,7 @@ import {
   addDoc,
   query,
   where,
-  getDocs,
+  onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
 import {
@@ -27,29 +27,29 @@ export default function App() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  useEffect(() => {
+ useEffect(() => {
   if (!user) {
     setNotes([]);
     return;
   }
 
-  const loadNotes = async () => {
-    const q = query(
-      collection(db, "notes"),
-      where("uid", "==", user.uid)
-    );
+  const q = query(
+    collection(db, "notes"),
+    where("uid", "==", user.uid)
+  );
 
-    const snapshot = await getDocs(q);
-
-    const data = snapshot.docs.map((doc) => ({
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const loadedNotes = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    setNotes(data);
-  };
+    console.log("Loaded Notes:", loadedNotes);
 
-  loadNotes();
+    setNotes(loadedNotes);
+  });
+
+  return () => unsubscribe();
 }, [user]);
 useEffect(() => {
   
