@@ -3,14 +3,11 @@ import { auth, provider } from "./firebase";
 import {
   
   signInWithPopup,
-  getRedirectResult,
-  GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut
 } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { signInWithPopup } from "firebase/auth";
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,6 +56,7 @@ const handleGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     console.log("Google User:", result.user);
+
     setUser(result.user);
     setShowAuthModal(false);
   } catch (error) {
